@@ -1,5 +1,5 @@
 # Define the Docker image name as a variable
-IMAGE_NAME := ticket-analysis
+IMAGE_NAME := notebook-template
 TOKEN := $(IMAGE_NAME)
 
 # Define phony targets

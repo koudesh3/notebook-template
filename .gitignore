@@ -6,3 +6,4 @@ app.log
 *.pyc
 .DS_Store
 .vscode/
+.ipynb_checkpoints
