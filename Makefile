@@ -1,5 +1,5 @@
 # Define the Docker image name as a variable
-IMAGE_NAME := tomato
+IMAGE_NAME := ticket-analysis
 TOKEN := $(IMAGE_NAME)
 
 # Define phony targets
