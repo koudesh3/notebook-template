@@ -1,37 +1,23 @@
 # Define the Docker image name as a variable
-IMAGE_NAME := test-app
-MIN_COVERAGE := 80
+IMAGE_NAME := tomato
+TOKEN := $(IMAGE_NAME)
 
 # Define phony targets
-.PHONY: build run test clean all
+.PHONY: build run stop clean
 
 # Build the Docker image
 build:
-	docker build -t $(IMAGE_NAME) .
+	docker build -t $(IMAGE_NAME) --build-arg JUPYTER_TOKEN=$(TOKEN) .
 
-
-# Run the Docker container with volume mapping and interaction
+# Run the Docker container with volume mapping
 run:
-	docker run --rm -it -v $(PWD):/usr/src/app $(IMAGE_NAME)
+	docker run --rm -d --name jupyter-container -p 8888:8888 -v $(PWD):/usr/src/app $(IMAGE_NAME)
+	@echo "Jupyter Lab is running at http://localhost:8888?token=$(TOKEN)"
 
-
-# Run pytest tests in the Docker container
-define run_tests
-	pytest -v src && \
-	pytest --cov=src --cov-report=term-missing --cov-fail-under=$(MIN_COVERAGE) src
-endef
-
-test:
-	docker run --rm -v $(PWD):/usr/src/app $(IMAGE_NAME) /bin/sh -c "$(run_tests)"
-
+# Stop the container
+stop:
+	docker stop jupyter-container || true
 
 # Clean up Docker resources
-clean:
-	docker container prune -f
-	docker image prune -f
-	docker rmi $(IMAGE_NAME)
-
-
-# Combine build and run
-all: build test run clean
-
+clean: stop
+	docker rmi $(IMAGE_NAME) || true
